@@ -1,0 +1,164 @@
+{
+	"info": {
+		"_postman_id": "453cf110-06ce-426e-b236-a97a3aca04ba",
+		"name": "SWAPI GraphQL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3636624"
+	},
+	"item": [
+		{
+			"name": "Get Luke Skywalker id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const jsonData = pm.response.json();",
+							"const people = jsonData.data.allPeople.people;",
+							"",
+							"pm.test(\"Get Luke Skywalker and set id\", function () {",
+							"    // Verify people array has values",
+							"    pm.expect(people.length).to.be.greaterThan(0);",
+							"    // Loop and set Luke Skywalker id",
+							"    for (let person of people) {",
+							"        if (person.name === \"Luke Skywalker\") {",
+							"            pm.environment.set(\"id\", person.id);",
+							"        }",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Query {\n  allPeople {\n    people {\n      id\n      name\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "https://swapi-graphql.netlify.app/.netlify/functions/index",
+					"protocol": "https",
+					"host": [
+						"swapi-graphql",
+						"netlify",
+						"app"
+					],
+					"path": [
+						".netlify",
+						"functions",
+						"index"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify Luke Skywalker homeworld",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const res = pm.response.json().data;",
+							"",
+							"pm.test(\"Verify Luke Skywalker homeworld\", function () {",
+							"    // Verify homeworld Tatooine",
+							"    pm.expect(res.person.homeworld.name).to.eql(\"Tatooine\");",
+							"",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Person($personId: ID) {\n  person(id: $personId) {\n    id\n    name\n    homeworld {\n      name\n    }\n  }\n}",
+						"variables": "{\n  \"personId\": \"{{id}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "https://swapi-graphql.netlify.app/.netlify/functions/index",
+					"protocol": "https",
+					"host": [
+						"swapi-graphql",
+						"netlify",
+						"app"
+					],
+					"path": [
+						".netlify",
+						"functions",
+						"index"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all starships",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Verify starship total count 36\", function () {",
+							"    pm.expect(jsonData.data.allStarships.totalCount).to.eql(36);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Query {\n  allStarships {\n    starships {\n      id\n      name\n      costInCredits\n      hyperdriveRating\n    }\n    totalCount\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "https://swapi-graphql.netlify.app/.netlify/functions/index",
+					"protocol": "https",
+					"host": [
+						"swapi-graphql",
+						"netlify",
+						"app"
+					],
+					"path": [
+						".netlify",
+						"functions",
+						"index"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

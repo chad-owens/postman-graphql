@@ -1,0 +1,26 @@
+name: Postman GraphQL Star Wars
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v3
+
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: | 
+          npm ci
+
+      - name: Run Tests
+        run:  | 
+          ./node_modules/.bin/newman run swapi/swapi.postman_collection.json
